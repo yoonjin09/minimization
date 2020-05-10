@@ -226,13 +226,9 @@ printf("%d hh\n",tokencount);
 
 
 
-
   
   for(int a=0; a< count; a++){
     free(list[a]);
-  }
-  for(int a=0; a< epicount; a++){
-    free(Epilist[a]);
   }
 
   return 0;

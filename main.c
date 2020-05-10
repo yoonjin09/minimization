@@ -14,7 +14,8 @@ typedef struct{
 int main(){
   char all[100]="";
   Variable* list[2048] ; 
-  Variable* Epilist[2048]; 
+  Variable* Epilist[2048];
+  Variable* tokenlist[2048]; 
   int count=0; //minterm 개수
   int varcount=0; //변수 개수
   int i= 0;
@@ -141,17 +142,6 @@ int main(){
 printf("%d %d\n",epilistcount,epicount);
 
 
-
-
-
-
-
-
-
-
-
-
-
   for(int a=0; a<epicount; a++){
     int count=0;
         for(int j=0; j< varcount; j++){
@@ -161,12 +151,89 @@ printf("%d %d\n",epilistcount,epicount);
       }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+   int tokencount=0;
+    for(int a=0; a< epicount; a++){
+      int samecount=0; //같은 자리수의 값이 같은 개수 확인용
+        //printf("a: %d\n",a);
+
+        if(Epilist[a]->epi == 0){
+          tokenlist[tokencount]=(Variable*)malloc(sizeof(Variable));
+
+          tokenlist[tokencount]=Epilist[a];
+          tokencount++;
+        
+        }
+        
+        for(int x=0; x<tokencount-1; x++){
+          for(int b=0; b<varcount; b++){
+            if(tokenlist[tokencount-1]->binary[b] == tokenlist[x]->binary[b]) samecount++;
+                        
+          }
+          if(samecount == 4){
+              free(tokenlist[tokencount-1]);
+              tokencount--;
+             continue;
+            }
+          
+          samecount=0;
+        }
+
+
+      }
+   
+  
+  
+printf("\n");
+for(int a=0; a<tokencount; a++){
+    int count=0;
+        for(int j=0; j< varcount; j++){
+        count++;
+        printf("%d ",tokenlist[a]->binary[j]);
+        if(count%varcount==0)printf("  %d  %d\n",tokenlist[a]->epi, tokenlist[a]->num);
+      }
+  }
+
+printf("%d hh\n",tokencount);
+
+
+//tokenlist로 epilist에 있던 필요한 것들 중 중복된 것을 빼고 저장했다. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   for(int a=0; a< count; a++){
     free(list[a]);
   }
   for(int a=0; a< epicount; a++){
     free(Epilist[a]);
   }
+
   return 0;
 }
-

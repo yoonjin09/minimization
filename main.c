@@ -9,6 +9,8 @@ typedef struct{
   int num;
   int binary[128];
   int epi;
+  char numeric[128];
+  int numericcount;
 } Variable;
 
 int main(){
@@ -34,6 +36,10 @@ int main(){
     
     list[i]=(Variable*)malloc(sizeof(Variable)); // 리스트 구조체 변수 생성 
     list[i]->num = atoi(token);
+    
+    list[i]->numeric[0]=list[i]->num;
+    list[i]->numeric[1]=-1; 
+    list[i]->numericcount++;
     //printf("%d\n",atoi(token));
     
     printf("%d \n",list[i]->num);
@@ -43,7 +49,7 @@ int main(){
   }
 
     printf("a: %d \n",list[0]->num);
-    printf("a: %d \n",list[1]->num);
+    printf("a: %d \n",list[1]->numeric[1]);
     printf("a: %d \n",list[2]->num);
 
   for(int a=0; a<count; a++){
@@ -77,6 +83,15 @@ int main(){
       }
       if(samecount==3){
         Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
+        
+        
+        Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= list[a]->numeric[0];
+        Epilist[epicount]->numericcount++;
+        Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= list[A]->numeric[0];
+         Epilist[epicount]->numericcount++;
+        Epilist[epicount]->numeric[(Epilist[epicount]->numericcount)+1]= -1;
+         
+        
         for(int b=0; b<varcount; b++){
           if(list[a]->binary[b] == list[A]->binary[b]){
             
@@ -84,6 +99,9 @@ int main(){
           }
           else Epilist[epicount]->binary[b]= 2;     
         }
+        
+            
+        
         epicount++;
         list[a]->epi=1;
         //printf("epi: %d\n\n",epicount);
@@ -120,6 +138,22 @@ int main(){
             }
             else Epilist[epicount]->binary[b]= 2;     
           }
+
+          for(int nucount = 0; nucount<Epilist[a]->numericcount;nucount++){
+          Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= Epilist[a]->numeric[nucount];
+          Epilist[epicount]->numericcount++;
+          }
+
+          for(int nucount = 0; nucount<Epilist[A]->numericcount;nucount++){
+          Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= Epilist[A]->numeric[nucount];
+          Epilist[epicount]->numericcount++;
+          }
+          Epilist[epicount]->numeric[(Epilist[epicount]->numericcount)+1]= -1;
+        
+            ////////////////////////////
+          
+        
+
           epicount++;
           Epilist[a]->epi=1;
           Epilist[A]->epi=1;
@@ -139,7 +173,7 @@ int main(){
    //printf("%d\n\n",epicount);
   //겹치지 않을 때까지 확인 가능
   
-printf("%d %d\n",epilistcount,epicount);
+  printf("%d %d\n",epilistcount,epicount);
 
 
   for(int a=0; a<epicount; a++){
@@ -173,7 +207,9 @@ printf("%d %d\n",epilistcount,epicount);
           tokenlist[tokencount]=(Variable*)malloc(sizeof(Variable));
 
           tokenlist[tokencount]=Epilist[a];
-          tokencount++;
+          
+
+        tokencount++;
         
         }
         
@@ -202,7 +238,16 @@ for(int a=0; a<tokencount; a++){
         for(int j=0; j< varcount; j++){
         count++;
         printf("%d ",tokenlist[a]->binary[j]);
-        if(count%varcount==0)printf("  %d  %d\n",tokenlist[a]->epi, tokenlist[a]->num);
+        if(count%varcount==0){
+          printf("  %d  %d ",tokenlist[a]->epi, tokenlist[a]->num);
+          for(int k=0; k<tokenlist[a]->numericcount; k++){
+            if(tokenlist[a]->numeric[k]== -1){
+              break;
+            }
+            else printf("%d ",tokenlist[a]->numeric[k]);
+          }
+          printf("\n");
+        }
       }
   }
 
@@ -210,6 +255,7 @@ printf("%d hh\n",tokencount);
 
 
 //tokenlist로 epilist에 있던 필요한 것들 중 중복된 것을 빼고 저장했다. 
+
 
 
 

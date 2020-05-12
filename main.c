@@ -72,7 +72,7 @@ int main(){
   }//변환이 잘 됐는지 확인 나중에 삭제
   
 
-  for(int a=0; a< count-1; a++){
+  for(int a=0; a< count; a++){
     int samecount=0; //같은 자리수의 값이 같은 개수 확인용
      int confirmsamecount=count; //모든 값에 대해 samecount가 3이하이면 그것도 추가
   //printf("a: %d\n",a);

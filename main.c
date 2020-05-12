@@ -74,8 +74,9 @@ int main(){
 
   for(int a=0; a< count-1; a++){
     int samecount=0; //같은 자리수의 값이 같은 개수 확인용
-      //printf("a: %d\n",a);
-    for(int A=a+1; A<count; A++){
+     int confirmsamecount=count; //모든 값에 대해 samecount가 3이하이면 그것도 추가
+  //printf("a: %d\n",a);
+    for(int A=0; A<count; A++){
       //printf("A: %d\n",A);
       for(int b=0; b<varcount; b++){
         if(list[a]->binary[b] == list[A]->binary[b]) samecount++;
@@ -101,14 +102,25 @@ int main(){
         }
         
             
-        
+        confirmsamecount--;
         epicount++;
         list[a]->epi=1;
         //printf("epi: %d\n\n",epicount);
       }
+
+
       samecount=0;
     }
-  }
+    if(confirmsamecount == count){
+         Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
+         Epilist[epicount]=list[a];
+         Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= list[a]->numeric[0];
+        //Epilist[epicount]->numericcount++;
+        epicount++;
+        list[a]->epi=0;
+
+      }
+ }
   printf("%d\n\n",epicount);
   //각 자리수를 한 번씩 다 비교 즉 3개의 값이 입력 됐으면 2번, 5개의 값이 입력 됐으면 10번 확인한다
 
@@ -239,7 +251,7 @@ for(int a=0; a<tokencount; a++){
         count++;
         printf("%d ",tokenlist[a]->binary[j]);
         if(count%varcount==0){
-          printf("  %d  %d ",tokenlist[a]->epi, tokenlist[a]->num);
+          printf("  %d  %d :",tokenlist[a]->epi, tokenlist[a]->num);
           for(int k=0; k<tokenlist[a]->numericcount; k++){
             if(tokenlist[a]->numeric[k]== -1){
               break;

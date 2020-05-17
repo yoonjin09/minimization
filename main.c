@@ -15,6 +15,7 @@ typedef struct{
 
 int main(){
   char all[100]="";
+  char dontcare[100]="";
   Variable* list[2048] ; 
   Variable* Epilist[2048];
   Variable* tokenlist[2048]; 
@@ -23,13 +24,23 @@ int main(){
   int i= 0;
   int epicount=0;
   char * token=NULL;
-
+  int mintermcount = 0;
+  int dontcarecount= 0;
   
 
   printf("변수 개수 입력: \n");
   scanf("%d", &varcount);
+  printf("minterm과 dont care 개수: \n");
+  scanf("%d %d", &mintermcount, &dontcarecount);
   getchar();
   scanf("%[^\n]s", all);
+  if(dontcarecount != 0){
+    getchar();
+    scanf("%[^\n]s", dontcare);
+    strcat(all," ");
+    strcat(all,dontcare);
+  }
+
   token=strtok(all," ");
 
   while(token!=NULL){

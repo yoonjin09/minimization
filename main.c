@@ -10,7 +10,8 @@ typedef struct{
   int binary[128];
   int epi;
   char numeric[128];
-  int numericcount;
+  int numericcount; // 0020 이면 0과 2로 numericcount 2
+  int isdontcare; //1이면 minterm, 0이면 dontcare
 } Variable;
 
 int main(){
@@ -24,29 +25,34 @@ int main(){
   int i= 0;
   int epicount=0;
   char * token=NULL;
-  int mintermcount = 0;
-  int dontcarecount= 0;
-  
+  int mintermcount=0;
+  int dontcarecount=0;
+  int ipisdontcare=0; //isdontcare에 1,0을 넣어주기 위한 변수
 
   printf("변수 개수 입력: \n");
   scanf("%d", &varcount);
-  printf("minterm과 dont care 개수: \n");
+  printf("minterm 과 dont care 개수: \n");
   scanf("%d %d", &mintermcount, &dontcarecount);
   getchar();
   scanf("%[^\n]s", all);
-  if(dontcarecount != 0){
+  if(dontcarecount!=0){
     getchar();
     scanf("%[^\n]s", dontcare);
     strcat(all," ");
     strcat(all,dontcare);
   }
-
+  
   token=strtok(all," ");
 
   while(token!=NULL){
     
     list[i]=(Variable*)malloc(sizeof(Variable)); // 리스트 구조체 변수 생성 
     list[i]->num = atoi(token);
+    if(ipisdontcare < mintermcount){
+      list[i]->isdontcare =1;
+      ipisdontcare++;
+    }
+    else list[i]->isdontcare =0;
     
     list[i]->numeric[0]=list[i]->num;
     list[i]->numeric[1]=-1; 
@@ -85,8 +91,8 @@ int main(){
 
   for(int a=0; a< count; a++){
     int samecount=0; //같은 자리수의 값이 같은 개수 확인용
-     int confirmsamecount=count; //모든 값에 대해 samecount가 3이하이면 그것도 추가
-  //printf("a: %d\n",a);
+    int confirmsamecount=count; //모든 값에 대해 samecount가 3이하이면 그것도 추가
+      //printf("a: %d\n",a);
     for(int A=0; A<count; A++){
       //printf("A: %d\n",A);
       for(int b=0; b<varcount; b++){
@@ -118,8 +124,8 @@ int main(){
         list[a]->epi=1;
         //printf("epi: %d\n\n",epicount);
       }
-
-
+      
+      
       samecount=0;
     }
     if(confirmsamecount == count){
@@ -131,7 +137,7 @@ int main(){
         list[a]->epi=0;
 
       }
- }
+  }
   printf("%d\n\n",epicount);
   //각 자리수를 한 번씩 다 비교 즉 3개의 값이 입력 됐으면 2번, 5개의 값이 입력 됐으면 10번 확인한다
 
@@ -287,7 +293,9 @@ printf("%d hh\n",tokencount);
 
 
 
-
+for(int z=0; z<count;z++){
+  printf("%d %d\n",z,list[z]->isdontcare);
+}
 
 
 

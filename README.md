@@ -24,3 +24,7 @@ epilist에서 epi가 0인 것만 tokenlist로 빼오는데 중복된 것은 제�
 -2020-05-17
 
 don't care 추가하는 것은 마무리가 됐다. 하지만 아직 어느 것이 minterm이고 어느 것이 don't care인지 구분을 안 지어놨다 struct에 관련해서 추가해야할 것 같다
+
+-2020-05-18
+
+doncare인지 minterm인지 구분해놨고, 이걸 이용해서 2차원 배열을 만들어야한다.

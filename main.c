@@ -286,7 +286,9 @@ printf("%d hh\n",tokencount);
 //tokenlist로 epilist에 있던 필요한 것들 중 중복된 것을 빼고 저장했다. 
 
 
-
+int x=tokencount;
+int y=mintermcount;
+int to_darray[x][y];
 
 
 

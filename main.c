@@ -99,7 +99,7 @@ int main(){
         if(list[a]->binary[b] == list[A]->binary[b]) samecount++;
         //printf("same: %d\n",samecount);
       }
-      if(samecount==3){
+      if(samecount==(varcount-1)){
         Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
         
         
@@ -158,7 +158,7 @@ int main(){
           if(Epilist[a]->binary[b] == Epilist[A]->binary[b]) samecount++;
           //printf("same: %d\n",samecount);
         }
-        if(samecount==3){
+        if(samecount==(varcount-1)){
           Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
           for(int b=0; b<varcount; b++){
             if(Epilist[a]->binary[b] == Epilist[A]->binary[b]){
@@ -247,7 +247,7 @@ int main(){
             if(tokenlist[tokencount-1]->binary[b] == tokenlist[x]->binary[b]) samecount++;
                         
           }
-          if(samecount == 4){
+          if(samecount == varcount){
               free(tokenlist[tokencount-1]);
               tokencount--;
              continue;

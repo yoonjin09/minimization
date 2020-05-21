@@ -270,10 +270,12 @@ for(int a=0; a<tokencount; a++){
         if(count%varcount==0){
           printf("  %d  %d :",tokenlist[a]->epi, tokenlist[a]->num);
           for(int k=0; k<tokenlist[a]->numericcount; k++){
-            if(tokenlist[a]->numeric[k]== -1){
+            /*if(tokenlist[a]->numeric[k]== -1){
               break;
             }
-            else printf("%d ",tokenlist[a]->numeric[k]);
+            */
+            //else 
+            printf("%d ",tokenlist[a]->numeric[k]);
           }
           printf("\n");
         }
@@ -286,12 +288,42 @@ printf("%d hh\n",tokencount);
 //tokenlist로 epilist에 있던 필요한 것들 중 중복된 것을 빼고 저장했다. 
 
 
-int x=tokencount;
-int y=mintermcount;
-int to_darray[x][y];
+int col=tokencount;
+int row=mintermcount;
+int to_darray[col][row];
+
+for(int z=0; z<mintermcount ; z++){
+  for(int y=0; y<tokencount; y++){
+    for(int k=0; k<tokenlist[y]->numericcount; k++){
+      if(tokenlist[y]->numeric[k]== list[z]->num ) to_darray[y][z]= 1;
+    }
+  }
+}
 
 
+for(int z=0; z<mintermcount; z++){
+  for(int y=0; y<tokencount; y++){
+    if(to_darray[y][z]!= 1) to_darray[y][z]=0;
+  }
+  printf("\n");
+}
 
+
+for(int z=0; z<mintermcount; z++){
+  printf("%d",list[z]->num);
+}
+
+
+printf("\n");
+printf("-------------------\n");
+
+
+for(int z=0; z<tokencount; z++){
+  for(int y=0; y<mintermcount; y++){
+    printf("%d",to_darray[z][y]);
+  }
+  printf("\n");
+}
 
 
 

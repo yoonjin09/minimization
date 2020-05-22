@@ -19,7 +19,8 @@ int main(){
   char dontcare[100]="";
   Variable* list[2048] ; 
   Variable* Epilist[2048];
-  Variable* tokenlist[2048]; 
+  Variable* tokenlist[2048];
+  Variable* finallist[2048]; 
   int count=0; //minterm 개수
   int varcount=0; //변수 개수
   int i= 0;
@@ -292,10 +293,20 @@ int col=tokencount;
 int row=mintermcount;
 int to_darray[col][row];
 
+int **twod_array;
+twod_array=(int **)malloc(tokencount * sizeof(int*));
+
+for(int z=0; z<tokencount ; z++){
+  for(int y=0; y<mintermcount; y++){
+    twod_array[z]=(int *)malloc(mintermcount * sizeof(int));
+    }
+  }
+
+
 for(int z=0; z<mintermcount ; z++){
   for(int y=0; y<tokencount; y++){
     for(int k=0; k<tokenlist[y]->numericcount; k++){
-      if(tokenlist[y]->numeric[k]== list[z]->num ) to_darray[y][z]= 1;
+      if(tokenlist[y]->numeric[k]== list[z]->num ) twod_array[y][z]= 1;
     }
   }
 }
@@ -303,7 +314,7 @@ for(int z=0; z<mintermcount ; z++){
 
 for(int z=0; z<mintermcount; z++){
   for(int y=0; y<tokencount; y++){
-    if(to_darray[y][z]!= 1) to_darray[y][z]=0;
+    if(twod_array[y][z]!= 1) twod_array[y][z]=0;
   }
   printf("\n");
 }
@@ -320,10 +331,57 @@ printf("-------------------\n");
 
 for(int z=0; z<tokencount; z++){
   for(int y=0; y<mintermcount; y++){
-    printf("%d",to_darray[z][y]);
+    printf("%d",twod_array[z][y]);
   }
   printf("\n");
 }
+
+printf("\n");
+printf("-------------------\n");
+
+int finalcount=0; //finallist에 들어갈 minterm이 몇 개인지 확인
+
+for(int y=0; y<mintermcount; y++){
+  int onecount=0;
+  for(int z=0; z<tokencount; z++){
+    if(twod_array[z][y] == 1) onecount++;
+  }
+  if(onecount==1){
+    finallist[finalcount]=(Variable*)malloc(sizeof(Variable)); //minimum cost expression을 저장할 list
+    for(int z=0; z<tokencount; z++){
+      if(twod_array[z][y] == 1){
+        finallist[finalcount]=tokenlist[z];
+        finalcount++;
+        for(int Y=0; Y<mintermcount; Y++){
+          if(twod_array[z][Y]==1){
+            for(int Z=0; Z<tokencount; Z++){
+              twod_array[Z][Y]=0;
+            }
+          }
+          twod_array[z][Y]=0;
+        }
+      } 
+      twod_array[z][y] = 0; 
+    } 
+  }
+}
+
+for(int z=0; z<tokencount; z++){
+  for(int y=0; y<mintermcount; y++){
+    printf("%d",twod_array[z][y]);
+  }
+  printf("\n");
+}
+
+
+for(int a=0; a<finalcount; a++){
+    int count=0;
+        for(int j=0; j< varcount; j++){
+        count++;
+        printf("%d ",finallist[a]->binary[j]);
+        if(count%varcount==0) printf("\n");
+      }
+  }
 
 
 

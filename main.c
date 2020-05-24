@@ -366,6 +366,45 @@ for(int y=0; y<mintermcount; y++){
   }
 }
 
+printf("Step 1: \n");
+for(int z=0; z<tokencount; z++){
+  for(int y=0; y<mintermcount; y++){
+    printf("%d",twod_array[z][y]);
+  }
+  printf("\n");
+}
+
+for(int y=0; y<mintermcount-1; y++){//마지막에 있는 것은 비교할게 없으니 마지막에서 두번째와 마지막을 비교하는 것이 맞다.
+  
+  
+  for(int Y=y+1; Y<mintermcount;Y++){
+    int colcount=0; // 세로 줄 비교
+    int onecount=0; //y줄에 1이 있는지 확인
+    int onecountnext=0;//y+1 에 1이 있는지 확인
+    for(int z=0; z<tokencount; z++){
+      
+        if(twod_array[z][y] == 1 && twod_array[z][Y] == 1) colcount++;
+        if(twod_array[z][y] == 1) onecount++;
+        if(twod_array[z][Y] == 1) onecountnext++;
+    }
+      if(colcount > 0 && onecount == colcount) {
+        for(int z=0; z<tokencount; z++){
+          twod_array[z][Y]= 0;
+        } 
+      }
+      else if(colcount > 0 && onecountnext == colcount) {
+        for(int z=0; z<tokencount; z++){
+          twod_array[z][y]= 0;
+        } 
+      }
+      printf("y: %d colcount: %d onecount: %d onecountnext: %d\n", y,colcount,onecount,onecountnext);
+    
+  }
+  
+}
+
+
+printf("Step 2: \n");
 for(int z=0; z<tokencount; z++){
   for(int y=0; y<mintermcount; y++){
     printf("%d",twod_array[z][y]);
@@ -374,13 +413,13 @@ for(int z=0; z<tokencount; z++){
 }
 
 
-for(int a=0; a<finalcount; a++){
+for(int a=0; a<finalcount; a++){ //finallist에 들어갔으면 보여주는 것
     int count=0;
-        for(int j=0; j< varcount; j++){
-        count++;
-        printf("%d ",finallist[a]->binary[j]);
-        if(count%varcount==0) printf("\n");
-      }
+    for(int j=0; j< varcount; j++){
+    count++;
+    printf("%d ",finallist[a]->binary[j]);
+    if(count%varcount==0) printf("\n");
+    }
   }
 
 

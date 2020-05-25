@@ -374,7 +374,7 @@ for(int z=0; z<tokencount; z++){
   printf("\n");
 }
 
-for(int y=0; y<mintermcount-1; y++){//마지막에 있는 것은 비교할게 없으니 마지막에서 두번째와 마지막을 비교하는 것이 맞다.
+for(int y=0; y<mintermcount-1; y++){//'-1'을 하는 이유: 마지막에 있는 것은 비교할게 없으니 마지막에서 두번째와 마지막을 비교하는 것이 맞다.
   
   
   for(int Y=y+1; Y<mintermcount;Y++){
@@ -405,6 +405,43 @@ for(int y=0; y<mintermcount-1; y++){//마지막에 있는 것은 비교할게 �
 
 
 printf("Step 2: \n");
+for(int z=0; z<tokencount; z++){
+  for(int y=0; y<mintermcount; y++){
+    printf("%d",twod_array[z][y]);
+  }
+  printf("\n");
+}
+
+for(int y=0; y<tokencount-1; y++){//'-1'을 하는 이유: 마지막에 있는 것은 비교할게 없으니 마지막에서 두번째와 마지막을 비교하는 것이 맞다.
+  
+  
+  for(int Y=y+1; Y<tokencount;Y++){
+    int rowcount=0; // 세로 줄 비교
+    int onecount=0; //y줄에 1이 있는지 확인
+    int onecountnext=0;//y+1 에 1이 있는지 확인
+    for(int z=0; z<mintermcount; z++){
+      
+        if(twod_array[y][z] == 1 && twod_array[Y][z] == 1) rowcount++;
+        if(twod_array[y][z] == 1) onecount++;
+        if(twod_array[Y][z] == 1) onecountnext++;
+    }
+      if(rowcount > 0 && onecount == rowcount) {
+        for(int z=0; z<tokencount; z++){
+          twod_array[y][z]= 0;
+        } 
+      }
+      else if(rowcount > 0 && onecountnext == rowcount) {
+        for(int z=0; z<tokencount; z++){
+          twod_array[Y][z]= 0;
+        } 
+      }
+      printf("y: %d colcount: %d onecount: %d onecountnext: %d\n", y,rowcount,onecount,onecountnext);
+    
+  }
+  
+}
+
+printf("Step 3: \n");
 for(int z=0; z<tokencount; z++){
   for(int y=0; y<mintermcount; y++){
     printf("%d",twod_array[z][y]);

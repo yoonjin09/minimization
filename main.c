@@ -3,22 +3,41 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_COUNT 40
-#define MAX_LENGTH 128
+//#define MAX_COUNT 40
+//#define MAX_LENGTH 128
+
 typedef struct{
   int num;
-  int binary[128];
+  int binary[1024];
   int epi;
-  char numeric[128];
+  char numeric[1024];
   int numericcount; // 0020 이면 0과 2로 numericcount 2
   int isdontcare; //1이면 minterm, 0이면 dontcare
 } Variable;
 
+void converttotwo(int varcount, int epicount, Variable* Epilist, Variable* list, int a , int A){
+    for(int b=0; b<varcount; b++){
+        if(list[a].binary[b] == list[A].binary[b]){
+            Epilist[epicount].binary[b] = list[a].binary[b]; //원래는 '-'를 넣어서 표현했지만 0,1 이 아닌 수 를 집어 넣어준 것
+        }
+        else Epilist[epicount].binary[b]= 2;     
+    }
+}
+
+int countsame(int varcount, Variable list, Variable s){ //samecount 개수 확인하는 함수
+    int samecount=0;
+    for(int b=0; b<varcount; b++){
+        if(list.binary[b] == s.binary[b]) samecount++;
+        //printf("same: %d\n",samecount);
+    }
+    return samecount;
+}
+
 int main(){
-  char all[100]="";
-  char dontcare[100]="";
+  char all[2048]="";
+  char dontcare[2048]="";
   Variable* list[2048] ; 
-  Variable* Epilist[2048];
+  Variable* Epilist[4096];
   Variable* tokenlist[2048];
   Variable* finallist[2048]; 
   int count=0; //minterm 개수
@@ -66,7 +85,7 @@ int main(){
     count++;
   }
 
-    printf("a: %d \n",list[0]->num);
+    printf("acount: %d \n",count);
     printf("a: %d \n",list[1]->numeric[1]);
     printf("a: %d \n",list[2]->num);
 
@@ -81,25 +100,29 @@ int main(){
   } // 이진수로 변환
   
   for(int a=0; a<count; a++){
-    int count=0;
+    int qcount=0;
     for(int j=0; j< varcount; j++){
-       count++;
+       qcount++;
       printf("%d ",list[a]->binary[j]);
-      if(count%varcount==0)printf("\n");
+      if(qcount%varcount==0)printf("\n");
     }
   }//변환이 잘 됐는지 확인 나중에 삭제
   
+  printf("dkr\n");
 
   for(int a=0; a< count; a++){
     int samecount=0; //같은 자리수의 값이 같은 개수 확인용
     int confirmsamecount=count; //모든 값에 대해 samecount가 3이하이면 그것도 추가
       //printf("a: %d\n",a);
-    for(int A=0; A<count; A++){
+    for(int A=a+1; A<count; A++){
       //printf("A: %d\n",A);
+      samecount = countsame(varcount, *list[a], *list[A]);
+      /*
       for(int b=0; b<varcount; b++){
         if(list[a]->binary[b] == list[A]->binary[b]) samecount++;
         //printf("same: %d\n",samecount);
       }
+      */
       if(samecount==(varcount-1)){
         Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
         
@@ -108,8 +131,9 @@ int main(){
         Epilist[epicount]->numericcount++;
         Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= list[A]->numeric[0];
          Epilist[epicount]->numericcount++;
-        Epilist[epicount]->numeric[(Epilist[epicount]->numericcount)+1]= -1;
+        Epilist[epicount]->numeric[(Epilist[epicount]->numericcount)]= -1;
          
+        //converttotwo(varcount, epicount, Epilist[epicount], list[a], a , A);
         
         for(int b=0; b<varcount; b++){
           if(list[a]->binary[b] == list[A]->binary[b]){
@@ -118,6 +142,7 @@ int main(){
           }
           else Epilist[epicount]->binary[b]= 2;     
         }
+        
         
             
         confirmsamecount--;
@@ -138,6 +163,8 @@ int main(){
         list[a]->epi=0;
 
       }
+      printf("%d dkr\n",a);
+      printf("%d dkr\n",epicount);
   }
   printf("%d\n\n",epicount);
   //각 자리수를 한 번씩 다 비교 즉 3개의 값이 입력 됐으면 2번, 5개의 값이 입력 됐으면 10번 확인한다
@@ -389,6 +416,8 @@ while(1){
           if(twod_array[z][y] == 1) onecount++;
           if(twod_array[z][Y] == 1) onecountnext++;
       }
+        
+        
         if(colcount > 0 && onecount == colcount) {
           for(int z=0; z<tokencount; z++){
             twod_array[z][Y]= 0;
@@ -428,6 +457,19 @@ while(1){
           if(twod_array[y][z] == 1) onecount++;
           if(twod_array[Y][z] == 1) onecountnext++;
       }
+        if(rowcount > 0 && onecount == rowcount && onecountnext == rowcount) {
+          if(tokenlist[y]->numericcount >= tokenlist[Y]->numericcount){
+            for(int z=0; z<mintermcount; z++){
+              twod_array[Y][z]= 0;
+            }
+          }
+          else {
+            for(int z=0; z<mintermcount; z++){
+              twod_array[y][z]= 0;
+            }
+          } 
+          rowcount=0;
+        }
         if(rowcount > 0 && onecount == rowcount) {
           for(int z=0; z<mintermcount; z++){
             twod_array[y][z]= 0;
@@ -438,7 +480,7 @@ while(1){
             twod_array[Y][z]= 0;
           } 
         }
-        printf("y: %d colcount: %d onecount: %d onecountnext: %d\n", y,rowcount,onecount,onecountnext);
+        printf("y: %d rowcount: %d onecount: %d onecountnext: %d\n", y,rowcount,onecount,onecountnext);
       
     }
     

@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "minh.h"
+#include "arraymin.h"
+
 int main(){
-    char all[2048]="";
-  char dontcare[2048]="";
-  Variable* list[100] ;
-  Variable* Epilist[100];
-  Variable* tokenlist[100];
-  Variable* finallist[100];
+    char all[50]="";
+  char dontcare[50]="";
+  Variable list[40] ;
+  Variable Epilist[2048];
+  Variable tokenlist[30];
+  Variable finallist[20];
+  printf("array");
   int count=0; //minterm 개수
   int varcount=0; //변수 개수
   int i= 0;
@@ -34,18 +36,17 @@ int main(){
 
   token=strtok(all," ");
   while(token!=NULL){
-    list[i]=(Variable*)malloc(sizeof(Variable)); // 리스트 구조체 변수 생성
-    list[i]->num = atoi(token);
+    list[i].num = atoi(token);
     if(ipisdontcare < mintermcount){
-      list[i]->isdontcare =1;
+      list[i].isdontcare =1;
       ipisdontcare++;
     }
-    else list[i]->isdontcare =0;
+    else list[i].isdontcare =0;
 
-    list[i]->numeric[0]=list[i]->num;
-    list[i]->numericcount++;
+    list[i].numeric[0]=list[i].num;
+    list[i].numericcount++;
     //printf("%d\n",atoi(token));
-    printf("%d \n",list[i]->num);
+    printf("%d \n",list[i].num);
     i++;
     token=strtok( NULL," ");
     count++;
@@ -55,11 +56,11 @@ int main(){
 
 
     while(a<count){
-    int tok=list[a]->num;
+    int tok=list[a].num;
     //printf("%d \n",tok);
     for(int j = (varcount-1); j> -1 ; j--){
-        if(tok == 0) list[a]->binary[j]=0;
-        else list[a]->binary[j]=tok%2;
+        if(tok == 0) list[a].binary[j]=0;
+        else list[a].binary[j]=tok%2;
         tok=tok/2;
     }
     a++;
@@ -68,34 +69,47 @@ int main(){
 
     printf("\n Debug 2\n"); // 이진수로 바꿔서 binary에 집어 넣는다.
 
-    printBinary(count, varcount, list);
+
+    for(int a=0; a<count; a++){
+        int count=0;
+        for(int j=0; j< varcount; j++){
+        count++;
+        printf("%d ",list[a].binary[j]);
+        if(count%varcount==0)printf("  %d\n",list[a].epi);
+        }
+    }
+
 
     while(a< count){
         int samecount=0; //같은 자리수의 값이 같은 개수 확인용
         int confirmsamecount=count; //모든 값에 대해 samecount가 3이하이면 그것도 추가
         for(int A=a+1; A<count; A++){
-            samecount = countsame(varcount, *list[a], *list[A]);
+            samecount = countsame(varcount, list[a], list[A]);
             if(samecount==(varcount-1)){
-                createList(Epilist, epicount, *list[a], *list[A]);
+                Epilist[epicount].numeric[Epilist[epicount].numericcount]= list[a].numeric[0];
+                Epilist[epicount].numericcount++;
+                Epilist[epicount].numeric[Epilist[epicount].numericcount]= list[A].numeric[0];
+                Epilist[epicount].numericcount++;
                 for(int b=0; b<varcount; b++){
-                    if(list[a]->binary[b] == list[A]->binary[b]){
-                        Epilist[epicount]->binary[b] = list[a]->binary[b]; //원래는 '-'를 넣어서 표현했지만 0,1 이 아닌 수 를 집어 넣어준 것
+                    if(list[a].binary[b] == list[A].binary[b]){
+                        Epilist[epicount].binary[b] = list[a].binary[b]; //원래는 '-'를 넣어서 표현했지만 0,1 이 아닌 수 를 집어 넣어준 것
                     }
-                    else Epilist[epicount]->binary[b]= 2;
+                    else Epilist[epicount].binary[b]= 2;
                 }
                 confirmsamecount--;
                 epicount++;
-                list[a]->epi=1;
+                list[a].epi=1;
             }
         }
         if(confirmsamecount == count){
-            Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
             Epilist[epicount]=list[a];
             epicount++;
-            list[a]->epi=0;
+            list[a].epi=0;
         }
         a++;
     }
+
+
     a=0;
 
     printf("\n Debug 3\n"); //각 자리수를 한 번씩 다 비교. 만약 같은 것이 없다면 그것도 epilist로 들어간다
@@ -106,34 +120,34 @@ int main(){
     int epilistcount=0;
     int nextepicount=0;
 
+
     while(epilistcount!=epicount){
+        printf("epicount: %d\n",epicount);
         epilistcount=epicount;
         int bconfirm=0;
         for(int a=nextepicount; a< epilistcount-1; a++){
             int samecount=0; //같은 자리수의 값이 같은 개수 확인용
             for(int A=a+1; A<epilistcount; A++){
                 for(int b=0; b<varcount; b++){
-                    if(Epilist[a]->binary[b] == Epilist[A]->binary[b]) samecount++;
+                    if(Epilist[a].binary[b] == Epilist[A].binary[b]) samecount++;
                     bconfirm=b;
                 }
                 if(samecount==(varcount-1)){
-                    Epilist[epicount]=(Variable*)malloc(sizeof(Variable));
                     for(int b=0; b<varcount; b++){
-                        if(Epilist[a]->binary[b] == Epilist[A]->binary[b]){
-                            Epilist[epicount]->binary[b] = Epilist[a]->binary[b]; //원래는 '-'를 넣어서 표현했지만 0,1 이 아닌 수 를 집어 넣어준 것
+                        if(Epilist[a].binary[b] == Epilist[A].binary[b]){
+                            Epilist[epicount].binary[b] = Epilist[a].binary[b]; //원래는 '-'를 넣어서 표현했지만 0,1 이 아닌 수 를 집어 넣어준 것
                         }
-                        else Epilist[epicount]->binary[b]= 2;
+                        else Epilist[epicount].binary[b]= 2;
                     }
                     int episamecount=0; // epi에서 새로운거 추가할 때 그 전에 같은 것이 있으면 1로 바뀐다.
-                    /*
+
                     for(int x=0; x<epilistcount; x++){
                         samecount=0;
-                        if(Epilist[x]->epi==0){
+                        if(Epilist[x].epi==0){
                             for(int b=0; b<varcount; b++){
-                                if(Epilist[epicount]->binary[b] == Epilist[x]->binary[b]) samecount++;
+                                if(Epilist[epicount].binary[b] == Epilist[x].binary[b]) samecount++;     
                             }
                             if(samecount == varcount){
-                                free(Epilist[epicount]);
                                 epicount--;
                                 //continue;
                                 episamecount=1;
@@ -142,31 +156,31 @@ int main(){
                         }
                         samecount=0;
                     }
-                   */
+                    //
                     if(episamecount==0){
-                        for(int nucount = 0; nucount<Epilist[a]->numericcount;nucount++){
+                        for(int nucount = 0; nucount<Epilist[a].numericcount;nucount++){
                             int kcount=0;
-                            for( int k=0; k< Epilist[epicount]->numericcount; k++){
-                                if(Epilist[epicount]->numeric[k] == Epilist[a]->numeric[nucount]) kcount++;
+                            for( int k=0; k< Epilist[epicount].numericcount; k++){
+                                if(Epilist[epicount].numeric[k] == Epilist[a].numeric[nucount]) kcount++;
                             }
                             if(kcount==0){
-                                Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= Epilist[a]->numeric[nucount];
-                                Epilist[epicount]->numericcount++;
+                                Epilist[epicount].numeric[Epilist[epicount].numericcount]= Epilist[a].numeric[nucount];
+                                Epilist[epicount].numericcount++;
                             }
                         }
 
-                        for(int nucount = 0; nucount<Epilist[A]->numericcount;nucount++){
+                        for(int nucount = 0; nucount<Epilist[A].numericcount;nucount++){
                             int kcount=0;
-                            for( int k=0; k< Epilist[epicount]->numericcount; k++){
-                                if(Epilist[epicount]->numeric[k] == Epilist[A]->numeric[nucount]) kcount++;
+                            for( int k=0; k< Epilist[epicount].numericcount; k++){
+                                if(Epilist[epicount].numeric[k] == Epilist[A].numeric[nucount]) kcount++;
                             }
                             if(kcount==0){
-                                Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= Epilist[A]->numeric[nucount];
-                                Epilist[epicount]->numericcount++;
+                                Epilist[epicount].numeric[Epilist[epicount].numericcount]= Epilist[A].numeric[nucount];
+                                Epilist[epicount].numericcount++;
                             }
                         }
-                    /*
-                    for(int nucount = 0; nucount<Epilist[A]->numericcount;nucount++){
+                        /*
+                        for(int nucount = 0; nucount<Epilist[A]->numericcount;nucount++){
 
                             Epilist[epicount]->numeric[Epilist[epicount]->numericcount]= Epilist[A]->numeric[nucount];
                             Epilist[epicount]->numericcount++;
@@ -175,8 +189,8 @@ int main(){
 
                         //Epilist[epicount]->numeric[(Epilist[epicount]->numericcount)]= -1;
                         epicount++;
-                        Epilist[a]->epi=1;
-                        Epilist[A]->epi=1;
+                        Epilist[a].epi=1;
+                        Epilist[A].epi=1;
                     }
                     episamecount=0;
                 }
@@ -185,6 +199,7 @@ int main(){
         }
         nextepicount=epilistcount;
     }
+
 
     printf("\n Debug 4\n"); //각 자리수를 한 번씩 다 비교. 만약 같은 것이 없다면 그것도 epilist로 들어간다
 
@@ -196,17 +211,15 @@ int main(){
     int tokencount=0;
     for(int a=epicount-1; a>-1 ; a--){
         int samecount=0; //같은 자리수의 값이 같은 개수 확인용
-        if(Epilist[a]->epi == 0){
-            tokenlist[tokencount]=(Variable*)malloc(sizeof(Variable));
+        if(Epilist[a].epi == 0){
             tokenlist[tokencount]=Epilist[a];///////
             tokencount++;
         }
         for(int x=0; x<tokencount-1; x++){
             for(int b=0; b<varcount; b++){
-                if(tokenlist[tokencount-1]->binary[b] == tokenlist[x]->binary[b]) samecount++;
+                if(tokenlist[tokencount-1].binary[b] == tokenlist[x].binary[b]) samecount++;
             }
             if(samecount == varcount){
-                free(tokenlist[tokencount-1]);
                 tokencount--;
                 //continue;
                 break;
@@ -239,8 +252,8 @@ int main(){
 
     for(int z=0; z<mintermcount ; z++){
         for(int y=0; y<tokencount; y++){
-            for(int k=0; k<tokenlist[y]->numericcount; k++){
-                if(tokenlist[y]->numeric[k]== list[z]->num ) twod_array[y][z]= 1;
+            for(int k=0; k<tokenlist[y].numericcount; k++){
+                if(tokenlist[y].numeric[k]== list[z].num ) twod_array[y][z]= 1;
             }
         }
     }
@@ -255,7 +268,7 @@ int main(){
 
 
     for(int z=0; z<mintermcount; z++){
-        printf("%d",list[z]->num);
+        printf("%d",list[z].num);
     }
 
 
@@ -276,7 +289,6 @@ int main(){
                 if(twod_array[z][y] == 1) onecount++;
             }
             if(onecount==1){
-                finallist[finalcount]=(Variable*)malloc(sizeof(Variable)); //minimum cost expression을 저장할 list
                 for(int z=0; z<tokencount; z++){
                     if(twod_array[z][y] == 1){
                         finallist[finalcount]=tokenlist[z];
@@ -309,7 +321,7 @@ int main(){
                 if(twod_array[Y][z] == 1) onecountnext++;
             }
             if(rowcount > 0 && onecount == rowcount && onecountnext == rowcount) {
-                if(tokenlist[y]->numericcount >= tokenlist[Y]->numericcount){
+                if(tokenlist[y].numericcount >= tokenlist[Y].numericcount){
                     for(int z=0; z<mintermcount; z++){
                         twod_array[Y][z]= 0;
                     }
@@ -372,7 +384,7 @@ int main(){
         int count=0;
         for(int j=0; j< varcount; j++){
             count++;
-            printf("%d ",finallist[a]->binary[j]);
+            printf("%d ",finallist[a].binary[j]);
             if(count%varcount==0) printf("\n");
         }
     }
@@ -387,14 +399,14 @@ int main(){
     }
 
 for(int z=0; z<count;z++){
-  printf("%d %d\n",z,list[z]->isdontcare);
+  printf("%d %d\n",z,list[z].isdontcare);
 }
 
 
 for(int a=0; a<finalcount; a++){
     for(int b=0; b< varcount; b++){
 
-        switch(finallist[a]->binary[b]){
+        switch(finallist[a].binary[b]){
             case 0 :
                 printf("x%d'",b+1);
                 break;
@@ -412,11 +424,6 @@ for(int a=0; a<finalcount; a++){
 
 
 
-
-
-  for(int a=0; a< count; a++){
-    free(list[a]);
-  }
     return 0;
 
 }

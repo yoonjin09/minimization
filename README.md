@@ -94,3 +94,5 @@ if else 로 되어있는 것들은 switch로 바꾸는 것이 좋을 것 같다.
 -2020-06-03
 
 결국 포인터는 포기하고 모든 것을 배열로 바꾸었고, putty, 터미널로 컴파일을 하면 잘 돌아간다 final_minimization으로 다시 올렸다.
+
+정리를 하기 위해 https://github.com/yoonjin09/final_minimization.git 다시 만들었다. 커밋이 엉망인데다가 고치는 것까지 엉망이다
